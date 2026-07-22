@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليلك لاختيار السيارة المناسبة لكل طريق</title>
+    
+    <!-- CSS Styles -->
+    <style>
+        :root {
+            --primary-color: #1e293b;
+            --accent-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #334155;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            max-width: 500px;
+            margin: 0 auto 40px auto;
+            text-align: center;
+        }
+
+        .controls label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            font-size: 1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.3s;
+            background-color: #fff;
+        }
+
+        select:focus {
+            border-color: var(--accent-color);
+        }
+
+        .car-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .car-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .car-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .car-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .car-info {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .car-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .car-type {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #3730a3;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            width: fit-content;
+            margin-bottom: 12px;
+        }
+
+        .car-desc {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+
+        .specs {
+            list-style: none;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 12px;
+            margin-top: auto;
+        }
+
+        .specs li {
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+        }
+
+        .specs strong {
+            color: var(--primary-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 40px;
+            color: #94a3b8;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🚘 مستشار الطرق والسيارات</h1>
+        <p>اختر طبيعة طريقك واكتشف السيارات الأنسب لمغامرتك التالية</p>
+    </header>
+
+    <main>
+        <section class="controls">
+            <label for="roadSelect">ما هو نوع الطريق الذي ستسلكه؟</label>
+            <select id="roadSelect" onchange="filterCars()">
+                <option value="all">جميع الطرق</option>
+                <option value="desert">البر والرمال (Off-Road)</option>
+                <option value="mountain">الطرق الجبلية والوعرة</option>
+                <option value="city">المدينة والاستخدام اليومي</option>
+                <option value="highway">السفر والسفر الطويل (السريع)</option>
+            </select>
+        </section>
+
+        <section class="car-grid" id="carGrid">
+            <!-- سيتم إضافة بطاقات السيارات هنا عبر JavaScript -->
+        </section>
+    </main>
+
+    <!-- JavaScript logic -->
+    <script>
+        // قاعدة بيانات السيارات
+        const carsData = [
+            {
+                id: 1,
+                name: "تويوتا لاندكروزر (Toyota Land Cruiser)",
+                roadType: "desert",
+                roadLabel: "البر والرمال",
+                image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=800&q=80",
+                description: "ملك الصحراء والرمال، مجهزة بنظام دفع رباعي متقدم ونظام زحف للتعامل مع أقسى الظروف.",
+                engine: "V6 Twin Turbo سعة 3.5 لتر",
+                drivetrain: "دفع رباعي مستمر (4WD)",
+                feature: "نظام اختيار نوع التربة (Multi-Terrain Select)"
+            },
+            {
+                id: 2,
+                name: "جيب رانجلر (Jeep Wrangler)",
+                roadType: "mountain",
+                roadLabel: "الطرق الجبلية والوعرة",
+                image: "https://images.unsplash.com/photo-1506015391300-4802dc74de2e?auto=format&fit=crop&w=800&q=80",
+                description: "الخيار الأول للصخور والجبال، خلوص أرضي مرتفع ونظام تعليق مخصص للمناطق الجبلية.",
+                engine: "V6 سعة 3.6 لتر",
+                drivetrain: "دفع رباعي (4x4)",
+                feature: "إمكانية فصل عمود التوازن للصخور"
+            },
+            {
+                id: 3,
+                name: "تسلا موديل 3 (Tesla Model 3)",
+                roadType: "city",
+                roadLabel: "المدينة والاستخدام اليومي",
+                image: "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=800&q=80",
+                description: "كهربائية بالكامل، موفرة جداً، أبعاد مثالية للمواقف وازحام المدينة مع تقنيات القيادة الذاتية.",
+                engine: "محرك كهربائي بالكامل",
+                drivetrain: "دفع خلفي / كلي",
+                feature: "قيادة ذاتية وتسارع فائق"
+            },
+            {
+                id: 4,
+                name: "مرسيدس S-Class",
+                roadType: "highway",
+                roadLabel: "السفر والطرق السريعة",
+                image: "https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80",
+                description: "قمة الراحة والعزل الصوتي للطرق الطويلة، مع أنظمة قيادة شبه ذاتية لتقليل إجهاد السائق.",
+                engine: "V6 أو V8 Turbo",
+                drivetrain: "دفع كلي (AWD)",
+                feature: "نظام تعليق هوائي يمتص صدمات الطريق"
+            },
+            {
+                id: 5,
+                name: "نيسان باترول (Nissan Patrol)",
+                roadType: "desert",
+                roadLabel: "البر والرمال",
+                image: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80",
+                description: "بطل الكثبان الرملية، يجمع بين القوة العالية في الصحراء والراحة الكبيرة في المقصورة.",
+                engine: "V8 سعة 5.6 لتر",
+                drivetrain: "دفع رباعي ذكي",
+                feature: "نظام التحكم المستمر بالمساعدات (HBMC)"
+            }
+        ];
+
+        // دالة لعرض السيارات في الصفحة
+        function renderCars(cars) {
+            const grid = document.getElementById('carGrid');
+            grid.innerHTML = '';
+
+            if (cars.length === 0) {
+                grid.innerHTML = '<div class="empty-state">عذراً، لا توجد سيارات مسجلة لهذا النوع من الطرق حالياً.</div>';
+                return;
+            }
+
+            cars.forEach(car => {
+                const card = document.createElement('div');
+                card.className = 'car-card';
+
+                card.innerHTML = `
+                    <img src="${car.image}" alt="${car.name}" class="car-img" loading="lazy">
+                    <div class="car-info">
+                        <span class="car-type">${car.roadLabel}</span>
+                        <h2 class="car-title">${car.name}</h2>
+                        <p class="car-desc">${car.description}</p>
+                        <ul class="specs">
+                            <li><strong>المحرك:</strong> ${car.engine}</li>
+                            <li><strong>نظام الدفع:</strong> ${car.drivetrain}</li>
+                            <li><strong>أبرز ميزة:</strong> ${car.feature}</li>
+                        </ul>
+                    </div>
+                `;
+
+                grid.appendChild(card);
+            });
+        }
+
+        // دالة تصفية السيارات بناءً على القائمة المنسدلة
+        function filterCars() {
+            const selectedRoad = document.getElementById('roadSelect').value;
+            
+            if (selectedRoad === 'all') {
+                renderCars(carsData);
+            } else {
+                const filtered = carsData.filter(car => car.roadType === selectedRoad);
+                renderCars(filtered);
+            }
+        }
+
+        // عرض جميع السيارات عند فتح الصفحة لأول مرة
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCars(carsData);
+        });
+    </script>
+</body>
+</html>
